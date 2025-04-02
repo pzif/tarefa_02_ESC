@@ -1,0 +1,26 @@
+{
+  "name": "tarefa_02_esc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pzif/tarefa_02_ESC.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pzif/tarefa_02_ESC/issues"
+  },
+  "homepage": "https://github.com/pzif/tarefa_02_ESC#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "nanoid": "^5.1.5",
+    "redis": "^4.7.0"
+  }
+}
