@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de URL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Encurtador de URL</h2>
+    <input type="text" id="url" placeholder="Digite a URL" size="40">
+    <button onclick="encurtarURL()">Encurtar</button>
+    <p id="resultado"></p>
+
+    <script>
+        async function encurtarURL() {
+            const url = document.getElementById("url").value;
+            if (!url) {
+                alert("Por favor, insira uma URL");
+                return;
+            }
+            
+            const response = await fetch("http://localhost:3000/encurtar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+            });
+            
+            const data = await response.json();
+            document.getElementById("resultado").innerHTML = `URL Encurtada: <a href="${data.encurtado}" target="_blank">${data.encurtado}</a>`;
+        }
+    </script>
+</body>
+</html>
