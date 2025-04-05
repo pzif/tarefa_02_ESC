@@ -1,44 +1,125 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encurtador de URL</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Encurtador de URL</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 50px 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .link-output {
+      margin-top: 15px;
+    }
+
+    a {
+      word-break: break-all;
+    }
+
+    .stats {
+      margin-top: 30px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-    <h2>Encurtador de URL</h2>
-    <input type="text" id="url" placeholder="Digite a URL" size="40">
+  <h2>🔗 Encurtador de URL</h2>
+  <div class="container">
+    <input type="text" id="url" placeholder="Digite a URL completa">
     <button onclick="encurtarURL()">Encurtar</button>
-    <p id="resultado"></p>
 
-    <script>
-        async function encurtarURL() {
-            const url = document.getElementById("url").value;
-            if (!url) {
-                alert("Por favor, insira uma URL");
-                return;
-            }
-            
-            const response = await fetch("http://localhost:3000/encurtar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url })
-            });
-            
-            const data = await response.json();
-            document.getElementById("resultado").innerHTML = `URL Encurtada: <a href="${data.encurtado}" target="_blank">${data.encurtado}</a>`;
-        }
-    </script>
+    <div class="link-output" id="resultado"></div>
+
+    <hr style="margin: 30px 0;">
+
+    <h4>📊 Consultar Estatísticas</h4>
+    <input type="text" id="codigo" placeholder="Digite o código encurtado (ex: abc123)">
+    <button onclick="buscarStats()">Ver Estatísticas</button>
+
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <script>
+    async function encurtarURL() {
+      const url = document.getElementById("url").value.trim();
+      if (!url) return alert("Por favor, insira uma URL");
+
+      const response = await fetch("http://localhost:3000/encurtar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        document.getElementById("resultado").innerText = "Erro: " + data.error;
+      } else {
+        document.getElementById("resultado").innerHTML = `
+          <strong>URL Encurtada:</strong><br>
+          <a href="${data.encurtado}" target="_blank">${data.encurtado}</a>
+        `;
+        document.getElementById("stats").innerHTML = ""; // limpa estatísticas anteriores
+      }
+    }
+
+    async function buscarStats() {
+      const codigo = document.getElementById("codigo").value.trim();
+      if (!codigo) return alert("Digite o código encurtado!");
+
+      const response = await fetch(`http://localhost:3000/stats/${codigo}`);
+      const data = await response.json();
+
+      if (data.error) {
+        document.getElementById("stats").innerText = "Erro: " + data.error;
+      } else {
+        document.getElementById("stats").innerHTML = `
+          <p><strong>URL Original:</strong> <a href="${data.url}" target="_blank">${data.url}</a></p>
+          <p><strong>Acessos:</strong> ${data.acessos}</p>
+        `;
+      }
+    }
+  </script>
 </body>
 </html>
